@@ -12,10 +12,10 @@ terraform {
 #  description = "eu-central-1"
 #}
 
-variable "your_ip" {
-  type        = string
-  description = "insert your IP e.g. $(curl ifconfig.me)"
-}
+#variable "your_ip" {
+#  type        = string
+#  description = "insert your IP e.g. $(curl ifconfig.me)"
+#}
 
 #variable "your_public_key" {
 #  type        = string
@@ -27,7 +27,9 @@ variable "mojang_server_url" {
   description = "https://piston-data.mojang.com/v1/objects/5b868151bd02b41319f54c8d4061b8cae84e665c/server.jar"
 }
 
-
+data "http""your_ip" {
+  url = "http://ifconfig.me"
+}
 
 
 provider "aws" {
@@ -41,7 +43,7 @@ resource "aws_security_group" "minecraft" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${var.your_ip}/32"]
+    cidr_blocks = ["${data.http.your_ip.body}/32"]
   }
   ingress {
     description = "Receive Minecraft from everywhere."
@@ -64,7 +66,7 @@ resource "aws_security_group" "minecraft" {
 
 #resource "aws_key_pair" "home" {
 #  key_name   = "Home"
-#  public_key = curl https://github.com/led0nk.keys
+#  public_key = "keyxyz"
 #}
 
 resource "aws_instance" "minecraft" {
@@ -102,6 +104,8 @@ output "instance_public_dns" {
   value = aws_instance.minecraft.public_dns
 }
 
-
+output "myip" {
+value = data.http.your_ip
+}
 
 #curl infconfig.me
