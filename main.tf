@@ -8,11 +8,6 @@ terraform {
 }
 
 
-#data "http""your_ip" {
-#  url = "http://ifconfig.me"
-#}
-
-
 provider "aws" {
   profile = "default"
   region  = "eu-central-1"
@@ -24,7 +19,6 @@ resource "aws_security_group" "minecraft" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-#    cidr_blocks = ["${data.http.your_ip.body}/32"]
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
@@ -53,7 +47,6 @@ resource "aws_instance" "minecraft" {
   instance_type               = "t2.small"
   vpc_security_group_ids      = [aws_security_group.minecraft.id]
   associate_public_ip_address = true
-#  key_name                    = aws_key_pair.home.key_name
   user_data                   = <<-EOF
     #!/bin/bash
     sudo dnf -y update
@@ -80,5 +73,3 @@ output instance_ip_addr {
 output instance_public_dns {
   value = aws_instance.minecraft.public_dns
 }
-
-

@@ -15,6 +15,7 @@ RUN java -Xmx1024M -Xms1024M -jar server.jar nogui || true
 RUN sed -i 's/eula=false/eula=true/' eula.txt
 
 COPY server.properties /minecraft/server.properties
+
 COPY whitelist.json /minecraft/whitelist.json
 
 CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "server.jar", "nogui"]
