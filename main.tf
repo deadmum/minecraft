@@ -22,14 +22,15 @@ terraform {
 #  description = "insert SSH Token"
 #}
 
-variable "mojang_server_url" {
-  type        = string
-  description = "https://piston-data.mojang.com/v1/objects/5b868151bd02b41319f54c8d4061b8cae84e665c/server.jar"
-}
+#variable "mojang_server_url" {
+#  type        = string
+#  description = "https://piston-data.mojang.com/v1/objects/5b868151bd02b41319f54c8d4061b8cae84e665c/server.jar"
+#}
 
 data "http""your_ip" {
   url = "http://ifconfig.me"
 }
+
 
 
 provider "aws" {
@@ -44,6 +45,7 @@ resource "aws_security_group" "minecraft" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["${data.http.your_ip.body}/32"]
+#    cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
     description = "Receive Minecraft from everywhere."
@@ -66,7 +68,7 @@ resource "aws_security_group" "minecraft" {
 
 #resource "aws_key_pair" "home" {
 #  key_name   = "Home"
-#  public_key = "keyxyz"
+#  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCoJXZkOgs6U0JvRQOUbxsqgYjHwlv4vqnzh8RyACnLq/p8nO8WzGlkNCbGJ9UkIpHkxPaKC8W/tctNIc42OC4jGgrHfJrM/pZC4M8QyRznZfiummTcRyUoLaJJMKoZxDc0hrIm19h12riYndyOsvIZFpCxJ9RRNDKi38zrYEtm1ZILpyyR8KX92+PP8Zxj7uHEL1k0ZFiErhKSI2Wk0D967o3yOlYExvZVDCSL8xth5H5rrcEmjJHmnAt2tWwIj7lV5Q0AfHD2cX3fRBerbtAvBWv7jhGFk6H7H4aol56VWl/9c4T4Fk9cTCCsmNPDiTvTGJ4gV9SX3LKaob82TLRTeEGdAjcDsyiNBxS+t3vgtMbwwExFfc6YYLMqEIydJhuf5W0gduxa8UwawItGMR0ykyPPmHstraM+R5HAFkKGiW0VEHDkpylQ4kfctVSMZyN4Ov0TXEpepQaGmdftIYxjKn2hX/7SD4UPzusVRW1ZjPYW5/hcOQ5Zi1wrrND2BDkDSPKl1qJ0Cydz7p5NjrFAopp2kKK6JsiGJ3MeF350pjSrUxYKH326ahzedtcf6jmz2KM6jieRPnX6cQimYnf/NaxQhzCR55J8LTw0La8BB8/2y7frESq7vz8carKewpjQKZbHt1b56R/9kAq8ixQ1ythIq0nJLOoQlJR8z5DMmw== janik.knodel@gmail.com"
 #}
 
 resource "aws_instance" "minecraft" {
@@ -77,35 +79,31 @@ resource "aws_instance" "minecraft" {
 #  key_name                    = aws_key_pair.home.key_name
   user_data                   = <<-EOF
     #!/bin/bash
-    sudo yum -y update
-    sudo rpm --import https://yum.corretto.aws/corretto.key
-    sudo curl -L -o /etc/yum.repos.d/corretto.repo https://yum.corretto.aws/corretto.repo
-    sudo yum install -y java-17-amazon-corretto-devel.x86_64
+    sudo dnf -y update
+    sudo dnf -y install docker
 
-    sudo curl https://github.com/led0nk.keys >> ~/.ssh/authorized_keys
-    chown ec2-user: ~/.ssh/authorized_keys
-    chmod600 ~/.ssh/authorized_keys
 
-    wget -O server.jar ${var.mojang_server_url}
-    java -Xmx1024M -Xms1024M -jar server.jar nogui
-    sed -i 's/eula=false/eula=true/' eula.txt
-    java -Xmx1024M -Xms1024M -jar server.jar nogui
+    sudo curl https://github.com/led0nk.keys >> /home/ec2-user/.ssh/authorized_keys
+    sudo chown ec2-user: /home/ec2-user/.ssh/authorized_keys
+    sudo chmod 600 /home/ec2-user/.ssh/authorized_keys
+    sudo systemctl start docker.service
+    sudo systemctl enable docker.service
+    sudo docker run --rm -it -p 0.0.0.0:25565:25565 ghcr.io/frzifus/minecraft:latest
+
     EOF
   tags = {
     Name = "Minecraft"
   }
 }
 
-output "instance_ip_addr" {
+output instance_ip_addr {
   value = aws_instance.minecraft.public_ip
 }
 
-output "instance_public_dns" {
+output instance_public_dns {
   value = aws_instance.minecraft.public_dns
 }
 
-output "myip" {
-value = data.http.your_ip
-}
+
 
 #curl infconfig.me
