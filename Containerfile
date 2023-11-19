@@ -6,14 +6,14 @@ FROM openjdk:17-jdk-slim
 
 EXPOSE 25565
 
-COPY --from=0 /server.jar /game/server.jar
+COPY --from=0 /server.jar /minecraft/server.jar
 
-WORKDIR /game
+WORKDIR /minecraft
 
 RUN java -Xmx1024M -Xms1024M -jar server.jar nogui || true
 
 RUN sed -i 's/eula=false/eula=true/' eula.txt
 
-COPY server.properties /game/server.properties
+COPY server.properties /minecraft/server.properties
 
 CMD ["java", "-Xmx1024M", "-Xms1024M", "-jar", "server.jar", "nogui"]
