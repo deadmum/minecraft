@@ -52,10 +52,10 @@ resource "aws_instance" "minecraft" {
     sudo dnf -y update
     sudo dnf -y install docker
 
-
     sudo curl https://github.com/led0nk.keys >> /home/ec2-user/.ssh/authorized_keys
     sudo chown ec2-user: /home/ec2-user/.ssh/authorized_keys
     sudo chmod 600 /home/ec2-user/.ssh/authorized_keys
+
     sudo systemctl start docker.service
     sudo systemctl enable docker.service
     sudo docker run --rm -it -p 0.0.0.0:25565:25565 ghcr.io/led0nk/minecraft:latest
