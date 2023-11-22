@@ -43,7 +43,8 @@ resource "aws_security_group" "minecraft" {
 
 
 resource "aws_instance" "minecraft" {
-  ami                         = "ami-0669b163befffbdfc"
+  ami                         = "ami-0b2a401a8b3f4edd3"
+# ami                         = "ami-0669b163befffbdfc"
   instance_type               = "t2.small"
   vpc_security_group_ids      = [aws_security_group.minecraft.id]
   associate_public_ip_address = true
