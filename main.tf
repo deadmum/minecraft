@@ -40,9 +40,13 @@ resource "aws_security_group" "minecraft" {
   }
 }
 
-variable "aws_access_key" {}
+variable "aws_access_key" {
+  type = string
+}
 
-variable "aws_secret_key" {}
+variable "aws_secret_key" {
+  type = string
+}
 
 
 resource "aws_instance" "minecraft" {
