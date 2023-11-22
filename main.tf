@@ -42,24 +42,33 @@ resource "aws_security_group" "minecraft" {
 
 
 
+
 resource "aws_instance" "minecraft" {
-  ami                         = "ami-0b2a401a8b3f4edd3"
-# ami                         = "ami-0669b163befffbdfc"
+  ami                         = "ami-0b2a401a8b3f4edd3" #Fedora
+# ami                         = "ami-0669b163befffbdfc" #Amazon Linux
   instance_type               = "t2.small"
   vpc_security_group_ids      = [aws_security_group.minecraft.id]
   associate_public_ip_address = true
+
   user_data                   = <<-EOF
     #!/bin/bash
     sudo dnf -y update
-    sudo dnf -y install docker
+    sudo dnf -y install podman
+    sudo dnf -y install s3fs-fuse
 
-    sudo curl https://github.com/led0nk.keys >> /home/ec2-user/.ssh/authorized_keys
-    sudo chown ec2-user: /home/ec2-user/.ssh/authorized_keys
-    sudo chmod 600 /home/ec2-user/.ssh/authorized_keys
+    sudo curl https://github.com/led0nk.keys >> /home/fedora/.ssh/authorized_keys
+    sudo chown fedora: /home/fedora/.ssh/authorized_keys
+    sudo chmod 600 /home/fedora/.ssh/authorized_keys
 
-    sudo systemctl start docker.service
-    sudo systemctl enable docker.service
-    sudo docker run --rm -it -p 0.0.0.0:25565:25565 ghcr.io/led0nk/minecraft:latest
+    sudo echo public-key:privatekey > ~/.passwd-s3fs
+    sudo chmod 600 ~/.passwd-s3fs
+    sudo s3fs minecraftbuck /mnt/tmp -o passwd_file=~/.passwd-s3fs
+
+    sudo systemctl start podman.service
+    sudo systemctl enable podman.service
+    sudo podman run --rm -it -d -p 0.0.0.0:25565:25565 \
+    -v /mnt/tmp/world:/minecraft/world:rshared \
+    ghcr.io/led0nk/minecraft:latest
 
     EOF
   tags = {
