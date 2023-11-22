@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+  app: minecraft
+  name: minecraft
+spec:
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+  containers:
+  - name: minecraft
+    volumeMounts:
+    - name: shared-data
+      mountPath: /minecraft/world
+    image: ghcr.io/led0nk/minecraft:latest
+    ports:
+    - containerPort: 25565
+      hostPort: 25565
+      protocol: TCP
+  - name: s3fs
+    volumeMounts:
+    - name: shared-data
+      mountPath: /s3fs/sync
+    env:
+    - name: AWS_S3_BUCKET
+      value: TODO
+    - name: AWS_S3_ACCESS_KEY_ID
+      value: TODO
+    - name: AWS_S3_SECRET_ACCESS_KEY
+      value: TODO
+    image: docker.io/efrecon/s3fs:1.93
+  resources: {}
+  restartPolicy: Never
