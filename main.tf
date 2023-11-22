@@ -62,6 +62,8 @@ resource "aws_instance" "minecraft" {
     sudo chown fedora: /home/fedora/.ssh/authorized_keys
     sudo chmod 600 /home/fedora/.ssh/authorized_keys
 
+    sudo mkdir /mnt/tmp/world
+
     sudo echo var.aws_access_key:var.aws_secret_key > ~/.passwd-s3fs
     sudo chmod 600 ~/.passwd-s3fs
     sudo s3fs minecraftbuck /mnt/tmp -o passwd_file=~/.passwd-s3fs
