@@ -70,7 +70,7 @@ resource "aws_instance" "minecraft" {
 
     sudo mkdir /mnt/tmp/world
 
-    sudo echo var.aws_access_key:var.aws_secret_key > ~/.passwd-s3fs
+    sudo echo var.AWS_ACCESS_KEY_ID:var.AWS_SECRET_ACCESS_KEY > ~/.passwd-s3fs
     sudo chmod 600 ~/.passwd-s3fs
     sudo s3fs minecraftbuck /mnt/tmp -o passwd_file=~/.passwd-s3fs
 
