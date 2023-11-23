@@ -11,8 +11,8 @@ terraform {
 provider "aws" {
   profile = "default"
   region  = "eu-central-1"
-  access_key = env.TF_VAR_AWS_ACCESS_KEY_ID
-  secret_key = env.TF_VAR_AWS_SECRET_ACCESS_KEY
+  access_key = env.TF_VAR_aws_access_key
+  secret_key = env.TF_VAR_aws_secret_key
   }
 
 resource "aws_security_group" "minecraft" {
