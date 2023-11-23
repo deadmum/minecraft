@@ -11,6 +11,8 @@ terraform {
 provider "aws" {
   profile = "default"
   region  = "eu-central-1"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
 }
 
 resource "aws_security_group" "minecraft" {
@@ -72,6 +74,7 @@ resource "aws_instance" "minecraft" {
     sudo chown fedora: /home/fedora/.ssh/authorized_keys
     sudo chmod 600 /home/fedora/.ssh/authorized_keys
 
+    sudo mkdir /mnt/tmp/
     sudo mkdir /mnt/tmp/world
 
 
