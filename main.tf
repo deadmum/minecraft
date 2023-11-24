@@ -99,7 +99,3 @@ output instance_ip_addr {
 output instance_public_dns {
   value = aws_instance.minecraft.public_dns
 }
-
-output instance_access_key {
-  value = env.TF_VAR_AWS_ACCESS_KEY_ID
-}
