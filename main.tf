@@ -100,6 +100,6 @@ output instance_public_dns {
   value = aws_instance.minecraft.public_dns
 }
 
-output instance_access_key {
-  value = var.aws_access_key
-}
+#output instance_access_key {
+# value = var.aws_access_key
+#}
