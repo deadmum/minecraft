@@ -11,8 +11,8 @@ terraform {
 provider "aws" {
   profile = "default"
   region  = "eu-central-1"
-  access_key = env.TF_VAR_aws_access_key
-  secret_key = env.TF_VAR_aws_secret_key
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
   }
 
 resource "aws_security_group" "minecraft" {
@@ -98,4 +98,8 @@ output instance_ip_addr {
 
 output instance_public_dns {
   value = aws_instance.minecraft.public_dns
+}
+
+output instance_public_dns {
+  value = env.TF_VAR_AWS_ACCESS_KEY_ID
 }
