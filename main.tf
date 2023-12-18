@@ -66,16 +66,13 @@ resource "aws_instance" "minecraft" {
   user_data                   = <<-EOF
     #!/bin/bash
     sudo dnf -y update
-    sudo dnf -y install podman
-    sudo dnf -y install s3fs-fuse
+    sudo dnf -y install podman s3fs-fuse
 
     sudo curl https://github.com/led0nk.keys >> /home/fedora/.ssh/authorized_keys
     sudo chown fedora: /home/fedora/.ssh/authorized_keys
     sudo chmod 600 /home/fedora/.ssh/authorized_keys
 
-    sudo mkdir /mnt/tmp/
-    sudo mkdir /mnt/tmp/world
-
+    sudo mkdir -p /mnt/tmp/world
 
     sudo s3fs minecraftbuck /mnt/tmp 
 
