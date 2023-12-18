@@ -52,9 +52,7 @@ variable "aws_secret_key" {
 }
 
 
-#    sudo echo var.AWS_ACCESS_KEY_ID:var.AWS_SECRET_ACCESS_KEY > ~/.passwd-s3fs
-#    sudo chmod 600 ~/.passwd-s3fs
-#     -o passwd_file=~/.passwd-s3fs
+
 
 resource "aws_instance" "minecraft" {
   ami                         = "ami-0b2a401a8b3f4edd3" #Fedora
@@ -73,8 +71,11 @@ resource "aws_instance" "minecraft" {
     sudo chmod 600 /home/fedora/.ssh/authorized_keys
 
     sudo mkdir -p /mnt/tmp/world
+    
+    sudo echo xyz:def > ~/.passwd-s3fs
+    sudo chmod 600 ~/.passwd-s3fs
 
-    sudo s3fs minecraftbuck /mnt/tmp 
+    sudo s3fs -o passwd_file=~/.passwd-s3fs minecraftbuck /mnt/tmp -o nonempty
 
     sudo systemctl start podman.service
     sudo systemctl enable podman.service
