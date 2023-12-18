@@ -29,7 +29,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::075924680375:role/minecraftbuck-role
           role-session-name: Github
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: eu-central-1
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
